@@ -6,17 +6,21 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import java.awt.GridBagLayout;
+import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+import centroEducativo.controladores.ControladorEstudiante;
+
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 
 public class PanelTablaCentro extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JTable table;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
@@ -26,12 +30,27 @@ public class PanelTablaCentro extends JPanel {
 	private JTextField textField_6;
 	private JTextField textField_7;
 	private JTextField textField_8;
+	private DefaultTableModel dtm = null;
+	private Object datosEnTabla[][] = ControladorEstudiante.getDatosDeTabla();
+	private String titulosEnTabla[] = ControladorEstudiante.getTitulosColumnas();
 
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					PanelTablaCentro frame = new PanelTablaCentro();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
 	public PanelTablaCentro() {
-		JFrame frame = new JFrame("SplitPane Demo");
+		JFrame frame = new JFrame("Gestion Centro Educativo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(696, 595);
+        frame.setSize(819, 708);
 
         // Crear los componentes que irán dentro del SplitPane
         JPanel panelSuperior = new JPanel();
@@ -40,6 +59,13 @@ public class PanelTablaCentro extends JPanel {
 
         // Crear el JSplitPane y configurarlo
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panelSuperior, panelInferior);
+        
+        JTable jTable = new JTable(dtm);
+        
+        dtm = getDefaultTableModelNoEditable();
+        
+        JScrollPane scrollTable = new JScrollPane(jTable);
+        panelSuperior.add(scrollTable);
         GridBagLayout gbl_panelInferior = new GridBagLayout();
         gbl_panelInferior.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         gbl_panelInferior.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -229,14 +255,27 @@ public class PanelTablaCentro extends JPanel {
         gbc_btnNewButton.gridx = 14;
         gbc_btnNewButton.gridy = 8;
         panelInferior.add(btnNewButton, gbc_btnNewButton);
-        
-        table = new JTable();
-        panelSuperior.add(table);
         splitPane.setResizeWeight(0.5); // Configura la distribución inicial de tamaño entre los componentes
 
         // Añadir el JSplitPane al frame y hacerlo visible
         frame.getContentPane().add(splitPane);
         frame.setVisible(true);
     }
+	private DefaultTableModel getDefaultTableModelNoEditable () {
+		DefaultTableModel dtm = new DefaultTableModel() {
+			
+			/**
+			 * La sobreescritura de este método nos permite controlar qué celdas queremos que sean editables
+			 */
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				if (column != 1) {
+					return false;
+				}
+				return true;
+			}
+		};
+		return dtm;
+	}
 
 }
