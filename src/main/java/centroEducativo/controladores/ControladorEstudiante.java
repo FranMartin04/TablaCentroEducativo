@@ -27,7 +27,7 @@ public class ControladorEstudiante extends Controlador {
 	}
 
 	public static String[] getTitulosColumnas() {
-		return new String[] {"Id", "Nombre", "1º apellido", "2º apellido", "Dni", "Direccion", "Email", "Telefono","Sexo","Color Preferido"};
+		return new String[] {"Id", "Nombre", "1º apellido", "2º apellido", "Dni", "Direccion", "Email", "Telefono"};
 	}
 	public List<Estudiante> findAllPersonas () {
 		List<Estudiante> entities = new ArrayList<Estudiante>();
@@ -57,8 +57,6 @@ public class ControladorEstudiante extends Controlador {
 			datos[i][5] = estudiante.getDireccion();
 			datos[i][6] = estudiante.getEmail();
 			datos[i][7] = estudiante.getTelefono();
-			datos[i][8] = estudiante.getIdTipologiaSexo();
-			datos[i][9] = estudiante.getColorPreferido();
 			
 		}
 		
