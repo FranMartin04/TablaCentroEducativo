@@ -2,6 +2,7 @@ package centroEducativo;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -40,7 +41,6 @@ public class PanelTablaCentro extends JPanel {
 	private JTextField tfemail;
 	private JTextField tftelefono;
 	private JTextField jtfcolor;
-	private JTextField textField_7;
 	private JTextField tfsapellido;
 	private DefaultTableModel dtm = null;
 	private Object datosEnTabla[][] = ControladorEstudiante.getDatosDeTabla();
@@ -433,4 +433,29 @@ public class PanelTablaCentro extends JPanel {
 		}
 
 	}
+	 private void guardarEstudiante() {
+	        // Obtener los datos de los campos de texto
+	        String nombre = tfnombre.getText();
+	        String primerApellido = tfpapellido.getText();
+	        String segundoApellido = tfsapellido.getText();
+	        String dni = tfdni.getText();
+	        String direccion = tfdireccion.getText();
+	        String email = tfemail.getText();
+	        String telefono = tftelefono.getText();
+	        String color = jtfcolor.getText();
+	        int sexo = jcbsexo.getSelectedIndex() + 1; // Sumar 1 porque los índices comienzan en 0
+
+	        // Llamar al método del controlador para guardar el estudiante
+	        boolean guardadoExitoso = ControladorEstudiante.guardarEstudiante(nombre, primerApellido, segundoApellido, dni, direccion, email, telefono, color, sexo);
+
+	        // Verificar si el guardado fue exitoso y mostrar un mensaje
+	        if (guardadoExitoso) {
+	            JOptionPane.showMessageDialog(null, "Estudiante guardado exitosamente.");
+	        } else {
+	            JOptionPane.showMessageDialog(null, "Error al guardar el estudiante.");
+	        }
+
+	        // Actualizar la tabla con los nuevos datos
+	        dtm.setDataVector(ControladorEstudiante.getDatosDeTabla(), ControladorEstudiante.getTitulosColumnas());
+	    }
 }

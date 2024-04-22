@@ -5,21 +5,21 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import centroEducativo.entities.Estudiante;
 
-
-
 public class ControladorEstudiante extends Controlador {
-	
+
 	private static ControladorEstudiante controller = null;
 
 	public ControladorEstudiante() {
 		super(Estudiante.class, "CentroEducativo");
 	}
-	public static ControladorEstudiante getControlador () {
+
+	public static ControladorEstudiante getControlador() {
 		if (controller == null) {
 			controller = new ControladorEstudiante();
 		}
@@ -27,20 +27,22 @@ public class ControladorEstudiante extends Controlador {
 	}
 
 	public static String[] getTitulosColumnas() {
-		return new String[] {"Id", "Nombre", "1º apellido", "2º apellido", "Dni", "Direccion", "Email", "Telefono","Color Preferido","ID Sexo"};
+		return new String[] { "Id", "Nombre", "1º apellido", "2º apellido", "Dni", "Direccion", "Email", "Telefono",
+				"Color Preferido", "ID Sexo" };
 	}
-	public List<Estudiante> findAllPersonas () {
+
+	public List<Estudiante> findAllPersonas() {
 		List<Estudiante> entities = new ArrayList<Estudiante>();
 		EntityManager em = getEntityManagerFactory().createEntityManager();
-		try {			
+		try {
 			Query q = em.createNativeQuery("SELECT * FROM estudiante", Estudiante.class);
 			entities = (List<Estudiante>) q.getResultList();
-		}
-		catch (NoResultException nrEx) {
+		} catch (NoResultException nrEx) {
 		}
 		em.close();
 		return entities;
 	}
+
 	public static Object[][] getDatosDeTabla() {
 		// Obtengo todas las personas
 		List<Estudiante> estudiantes = ControladorEstudiante.getControlador().findAllPersonas();
@@ -59,11 +61,43 @@ public class ControladorEstudiante extends Controlador {
 			datos[i][7] = estudiante.getTelefono();
 			datos[i][8] = estudiante.getColorPreferido();
 			datos[i][9] = estudiante.getIdTipologiaSexo();
-			
+
 		}
-		
+
 		return datos;
 	}
-	
-	
+
+	public static boolean guardarEstudiante(String nombre, String primerApellido, String segundoApellido, String dni,
+			String direccion, String email, String telefono, String colorPreferido, int idTipologiaSexo) {
+		EntityManager em = getEntityManagerFactory().createEntityManager();
+		EntityTransaction et = em.getTransaction();
+		boolean guardadoExitoso = false;
+
+		try {
+			et.begin();
+			Estudiante estudiante = new Estudiante();
+			estudiante.setNombre(nombre);
+			estudiante.setApellido1(primerApellido);
+			estudiante.setApellido2(segundoApellido);
+			estudiante.setDni(dni);
+			estudiante.setDireccion(direccion);
+			estudiante.setEmail(email);
+			estudiante.setTelefono(telefono);
+			estudiante.setColorPreferido(colorPreferido);
+			estudiante.setIdTipologiaSexo(idTipologiaSexo);
+			em.persist(estudiante);
+			et.commit();
+			guardadoExitoso = true;
+		} catch (Exception e) {
+			if (et != null && et.isActive()) {
+				et.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			em.close();
+		}
+
+		return guardadoExitoso;
+	}
+
 }
