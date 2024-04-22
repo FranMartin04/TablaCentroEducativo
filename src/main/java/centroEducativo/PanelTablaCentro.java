@@ -15,14 +15,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 
 import centroEducativo.controladores.ControladorEstudiante;
 
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Files;
 import java.awt.event.ActionEvent;
 
 public class PanelTablaCentro extends JPanel {
@@ -40,6 +45,9 @@ public class PanelTablaCentro extends JPanel {
 	private DefaultTableModel dtm = null;
 	private Object datosEnTabla[][] = ControladorEstudiante.getDatosDeTabla();
 	private String titulosEnTabla[] = ControladorEstudiante.getTitulosColumnas();
+	private JScrollPane JscrollPane;
+	private JComboBox<String> jcbsexo;
+	byte[] imagenEnArrayDeBytes;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -87,7 +95,13 @@ public class PanelTablaCentro extends JPanel {
                         String email = (String) jTable.getValueAt(selectedRow, 6);
                         String telefono = (String) jTable.getValueAt(selectedRow, 7);
                         String color = (String) jTable.getValueAt(selectedRow, 8);
-
+                        Integer sexo = (Integer)jTable.getValueAt(selectedRow, 9);
+                        
+                        if (sexo != null) {
+                            jcbsexo.setSelectedIndex(sexo - 1); 
+                        }
+                        
+                        
                         // Actualizar los campos del panel superior con los datos obtenidos
                         tfdni.setText(id);
                         tfnombre.setText(nombre);
@@ -167,14 +181,14 @@ public class PanelTablaCentro extends JPanel {
         panelInferior.add(tfsapellido, gbc_tfsapellido);
         tfsapellido.setColumns(10);
         
-        JScrollPane scrollPane = new JScrollPane();
+        JscrollPane = new JScrollPane();
         GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-        gbc_scrollPane.gridheight = 3;
+        gbc_scrollPane.gridheight = 5;
         gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
         gbc_scrollPane.fill = GridBagConstraints.BOTH;
         gbc_scrollPane.gridx = 14;
         gbc_scrollPane.gridy = 0;
-        panelInferior.add(scrollPane, gbc_scrollPane);
+        panelInferior.add(JscrollPane , gbc_scrollPane);
         
         JLabel lblNewLabel_2 = new JLabel("Sexo:");
         GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
@@ -184,7 +198,7 @@ public class PanelTablaCentro extends JPanel {
         gbc_lblNewLabel_2.gridy = 3;
         panelInferior.add(lblNewLabel_2, gbc_lblNewLabel_2);
         
-        JComboBox jcbsexo = new JComboBox();
+        jcbsexo = new JComboBox();
         GridBagConstraints gbc_jcbsexo = new GridBagConstraints();
         gbc_jcbsexo.gridwidth = 12;
         gbc_jcbsexo.insets = new Insets(0, 0, 5, 5);
@@ -193,12 +207,8 @@ public class PanelTablaCentro extends JPanel {
         gbc_jcbsexo.gridy = 3;
         panelInferior.add(jcbsexo, gbc_jcbsexo);
         
-        JButton btnNewButton_1 = new JButton("Cargar Imagen");
-        GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-        gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
-        gbc_btnNewButton_1.gridx = 14;
-        gbc_btnNewButton_1.gridy = 3;
-        panelInferior.add(btnNewButton_1, gbc_btnNewButton_1);
+        jcbsexo.addItem("Hombre");
+        jcbsexo.addItem("Mujer");
         
         JLabel lblNewLabel_3 = new JLabel("DNI:");
         GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
@@ -235,6 +245,18 @@ public class PanelTablaCentro extends JPanel {
         gbc_tfdireccion.gridy = 5;
         panelInferior.add(tfdireccion, gbc_tfdireccion);
         tfdireccion.setColumns(10);
+        
+        JButton btnNewButton_1 = new JButton("Cargar Imagen");
+        btnNewButton_1.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		seleccionaImagen();
+        	}
+        });
+        GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
+        gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
+        gbc_btnNewButton_1.gridx = 14;
+        gbc_btnNewButton_1.gridy = 5;
+        panelInferior.add(btnNewButton_1, gbc_btnNewButton_1);
         
         JLabel lblNewLabel_5 = new JLabel("Email:");
         GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
@@ -354,5 +376,61 @@ public class PanelTablaCentro extends JPanel {
 	        System.err.println("Error al decodificar el color hexadecimal.");
 	    }
 	}
+	private void seleccionaImagen () {
+		JFileChooser jfileChooser = new JFileChooser();
+		
+		// Configurando el componente
+		
+		// Tipo de selección que se hace en el diálogo
+		jfileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); // Sólo selecciona ficheros
 
+		// Filtro del tipo de ficheros que puede abrir
+		jfileChooser.setFileFilter(new FileFilter() {
+			
+			@Override
+			public String getDescription() {
+				return "Archivos de imagen *.jpg *.png *.gif";
+			}
+			
+			@Override
+			public boolean accept(File f) {
+				if (f.isDirectory() || (f.isFile() &&
+						(f.getAbsolutePath().toLowerCase().endsWith(".jpg") || 
+								f.getAbsolutePath().toLowerCase().endsWith(".jpeg")|| 
+								f.getAbsolutePath().toLowerCase().endsWith(".png")|| 
+								f.getAbsolutePath().toLowerCase().endsWith(".gif")))) 
+					return true;
+				return false;
+			}
+		});
+		
+		// Abro el diálogo para la elección del usuario
+		int seleccionUsuario = jfileChooser.showOpenDialog(null);
+		
+		if (seleccionUsuario == JFileChooser.APPROVE_OPTION) {
+			File fichero = jfileChooser.getSelectedFile();
+			
+			if (fichero.isFile()) {
+				try {
+					this.imagenEnArrayDeBytes = Files.readAllBytes(fichero.toPath());
+					mostrarImagen();
+				}
+				catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+	}
+	private void mostrarImagen () {
+		if (imagenEnArrayDeBytes != null && imagenEnArrayDeBytes.length > 0) {
+			ImageIcon icono = new ImageIcon(imagenEnArrayDeBytes);
+			JLabel lblIcono = new JLabel(icono);
+			JscrollPane.setViewportView(lblIcono);
+		}
+		else {
+			JLabel lblIcono = new JLabel("Sin imagen");
+			JscrollPane.setViewportView(lblIcono);
+		}
+
+	}
 }

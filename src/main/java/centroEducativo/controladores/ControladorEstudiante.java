@@ -27,7 +27,7 @@ public class ControladorEstudiante extends Controlador {
 	}
 
 	public static String[] getTitulosColumnas() {
-		return new String[] {"Id", "Nombre", "1º apellido", "2º apellido", "Dni", "Direccion", "Email", "Telefono","Color Preferido"};
+		return new String[] {"Id", "Nombre", "1º apellido", "2º apellido", "Dni", "Direccion", "Email", "Telefono","Color Preferido","ID Sexo"};
 	}
 	public List<Estudiante> findAllPersonas () {
 		List<Estudiante> entities = new ArrayList<Estudiante>();
@@ -45,7 +45,7 @@ public class ControladorEstudiante extends Controlador {
 		// Obtengo todas las personas
 		List<Estudiante> estudiantes = ControladorEstudiante.getControlador().findAllPersonas();
 		// Preparo una estructura para pasar al constructor de la JTable
-		Object[][] datos = new Object[estudiantes.size()][9];
+		Object[][] datos = new Object[estudiantes.size()][10];
 		// Cargo los datos de la lista de personas en la matriz de los datos
 		for (int i = 0; i < estudiantes.size(); i++) {
 			Estudiante estudiante = estudiantes.get(i);
@@ -58,6 +58,7 @@ public class ControladorEstudiante extends Controlador {
 			datos[i][6] = estudiante.getEmail();
 			datos[i][7] = estudiante.getTelefono();
 			datos[i][8] = estudiante.getColorPreferido();
+			datos[i][9] = estudiante.getIdTipologiaSexo();
 			
 		}
 		
