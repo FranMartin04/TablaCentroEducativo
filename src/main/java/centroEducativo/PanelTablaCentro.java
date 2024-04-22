@@ -57,7 +57,7 @@ public class PanelTablaCentro extends JPanel {
 	public PanelTablaCentro() {
 		JFrame frame = new JFrame("Gestion Centro Educativo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(804, 680);
+        frame.setSize(806, 535);
 
         // Crear los componentes que irán dentro del SplitPane
         JPanel panelSuperior = new JPanel(new BorderLayout());
@@ -98,6 +98,7 @@ public class PanelTablaCentro extends JPanel {
                         tfemail.setText(email);
                         tftelefono.setText(telefono);
                         jtfcolor.setText(color);
+                        cargarColor(panelInferior);
 
                     }
                 }
@@ -110,7 +111,7 @@ public class PanelTablaCentro extends JPanel {
         gbl_panelInferior.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         gbl_panelInferior.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         gbl_panelInferior.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-        gbl_panelInferior.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelInferior.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         panelInferior.setLayout(gbl_panelInferior);
         
         JLabel lblNewLabel = new JLabel("Nombre:");
@@ -306,11 +307,13 @@ public class PanelTablaCentro extends JPanel {
         gbc_jbGuardar.gridx = 14;
         gbc_jbGuardar.gridy = 9;
         panelInferior.add(jbGuardar, gbc_jbGuardar);
-        splitPane.setResizeWeight(0.5); // Configura la distribución inicial de tamaño entre los componentes
+        splitPane.setResizeWeight(0.5); // Configuracion de la distribución inicial de tamaño entre los componentes
 
         // Añadir el JSplitPane al frame y hacerlo visible
         frame.getContentPane().add(splitPane);
         frame.setVisible(true);
+        
+        
     }
 	private DefaultTableModel getDefaultTableModelNoEditable () {
 		DefaultTableModel dtm = new DefaultTableModel(datosEnTabla, titulosEnTabla) {
@@ -338,5 +341,18 @@ public class PanelTablaCentro extends JPanel {
             panelInferior.setBackground(color);
         }
     }
+	private void cargarColor(JPanel panelInferior) {
+	    String strColor = jtfcolor.getText(); // Obtener el color en formato hexadecimal desde el JTextField
+
+	    try {
+	        Color color = Color.decode(strColor); // Convertir el color hexadecimal a un objeto Color
+
+	        // Establecer el color de fondo del panel
+	        panelInferior.setBackground(color);
+	    } catch (NumberFormatException e) {
+	        // Manejar la excepción si el color no se puede decodificar correctamente
+	        System.err.println("Error al decodificar el color hexadecimal.");
+	    }
+	}
 
 }
