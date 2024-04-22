@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import java.awt.GridBagLayout;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
@@ -59,7 +60,7 @@ public class PanelTablaCentro extends JPanel {
         frame.setSize(804, 680);
 
         // Crear los componentes que irán dentro del SplitPane
-        JPanel panelSuperior = new JPanel();
+        JPanel panelSuperior = new JPanel(new BorderLayout());
 
         JPanel panelInferior = new JPanel();
 
@@ -85,6 +86,7 @@ public class PanelTablaCentro extends JPanel {
                         String direccion = (String) jTable.getValueAt(selectedRow, 5);
                         String email = (String) jTable.getValueAt(selectedRow, 6);
                         String telefono = (String) jTable.getValueAt(selectedRow, 7);
+                        String color = (String) jTable.getValueAt(selectedRow, 8);
 
                         // Actualizar los campos del panel superior con los datos obtenidos
                         tfdni.setText(id);
@@ -95,6 +97,7 @@ public class PanelTablaCentro extends JPanel {
                         tfdireccion.setText(direccion);
                         tfemail.setText(email);
                         tftelefono.setText(telefono);
+                        jtfcolor.setText(color);
 
                     }
                 }
@@ -102,7 +105,7 @@ public class PanelTablaCentro extends JPanel {
         });
         
         JScrollPane scrollTable = new JScrollPane(jTable);
-        panelSuperior.add(scrollTable);
+        panelSuperior.add(scrollTable, BorderLayout.CENTER);
         GridBagLayout gbl_panelInferior = new GridBagLayout();
         gbl_panelInferior.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         gbl_panelInferior.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
