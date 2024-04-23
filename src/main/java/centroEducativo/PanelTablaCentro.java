@@ -325,6 +325,11 @@ public class PanelTablaCentro extends JPanel {
         panelInferior.add(btnNewButton, gbc_btnNewButton);
         
         JButton jbGuardar = new JButton("Guardar");
+        jbGuardar.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		guardarEstudiante();
+        	}
+        });
         GridBagConstraints gbc_jbGuardar = new GridBagConstraints();
         gbc_jbGuardar.gridx = 14;
         gbc_jbGuardar.gridy = 9;
